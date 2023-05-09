@@ -1,3 +1,4 @@
+# %% [code]
 # %% [code] {"execution":{"iopub.status.busy":"2023-05-05T13:24:01.520526Z","iopub.execute_input":"2023-05-05T13:24:01.521147Z","iopub.status.idle":"2023-05-05T13:24:01.565987Z","shell.execute_reply.started":"2023-05-05T13:24:01.521102Z","shell.execute_reply":"2023-05-05T13:24:01.565084Z"}}
 
 #Model utilities to do basic NLP functions as well as functions to help in training and evaluation.
@@ -121,21 +122,22 @@ def training(model,train_loader,train_batches,val_loader,val_batches,loss_functi
         epoch_val_loss=0
         total_val_size=0 
         val_accuracy=0 
+        
+        with torch.no_grad():
+            for batch_id,(input,mask,target) in enumerate(val_loader):        
+                input=input.to(device)            
+                target=target.to(device)
+                mask=mask.to(device)
+                output=model(input)
+                loss=loss_function(output,target)
+                epoch_val_loss+=loss.item()
+                total_val_size+=input.shape[0]
+                val_accuracy+=get_correct(output,target)       
 
-        for batch_id,(input,mask,target) in enumerate(val_loader):        
-            input=input.to(device)            
-            target=target.to(device)
-            mask=mask.to(device)
-            output=model(input)
-            loss=loss_function(output,target)
-            epoch_val_loss+=loss.item()
-            total_val_size+=input.shape[0]
-            val_accuracy+=get_correct(output,target)       
-
-        val_loss_epoch=float(1.0*epoch_val_loss)/val_batches
-        val_acc_epoch=(100.0*val_accuracy)/total_val_size
-        print(f'Val Loss: {val_loss_epoch} \t Accuracy {val_acc_epoch}')
-        print("*-----------------------------------------------------*\n")        
+            val_loss_epoch=float(1.0*epoch_val_loss)/val_batches
+            val_acc_epoch=(100.0*val_accuracy)/total_val_size
+            print(f'Val Loss: {val_loss_epoch} \t Accuracy {val_acc_epoch}')
+            print("*-----------------------------------------------------*\n")        
     return
 
 # %% [code]
@@ -144,18 +146,19 @@ def testing(model,test_loader,test_batches,loss_function,device):
     epoch_test_loss=0
     total_test_size=0 
     test_accuracy=0 
-    for batch_id,(input,mask,target) in enumerate(test_loader): 
-        input=input.to(device)            
-        target=target.to(device)   
-        mask=mask.to(device)                
-        output=model(input)             
-        loss=loss_function(output,target) 
-                
-        epoch_test_loss+=loss.item()
-        total_test_size+=input.shape[0]
-        test_accuracy+=get_correct(output,target)       
+    with torch.no_grad():
+        for batch_id,(input,mask,target) in enumerate(test_loader): 
+            input=input.to(device)            
+            target=target.to(device)   
+            mask=mask.to(device)                
+            output=model(input)             
+            loss=loss_function(output,target) 
 
-    test_loss_epoch=float(1.0*epoch_test_loss)/test_batches
-    test_acc_epoch=(100.0*test_accuracy)/total_test_size
-    print(f'test Loss: {test_loss_epoch} \t Accuracy {test_acc_epoch}')     
+            epoch_test_loss+=loss.item()
+            total_test_size+=input.shape[0]
+            test_accuracy+=get_correct(output,target)       
+
+        test_loss_epoch=float(1.0*epoch_test_loss)/test_batches
+        test_acc_epoch=(100.0*test_accuracy)/total_test_size
+        print(f'test Loss: {test_loss_epoch} \t Accuracy {test_acc_epoch}')     
     return 
