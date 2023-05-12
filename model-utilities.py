@@ -1,9 +1,10 @@
 # %% [code]
+# %% [code]
 # %% [code] {"execution":{"iopub.status.busy":"2023-05-05T13:24:01.520526Z","iopub.execute_input":"2023-05-05T13:24:01.521147Z","iopub.status.idle":"2023-05-05T13:24:01.565987Z","shell.execute_reply.started":"2023-05-05T13:24:01.521102Z","shell.execute_reply":"2023-05-05T13:24:01.565084Z"}}
 
 #Model utilities to do basic NLP functions as well as functions to help in training and evaluation.
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import numpy as np 
+import pandas as pd 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -52,7 +53,7 @@ class TextDataset(Dataset):
         return len(self.pd_table)
     
     def Text2Ints(self,text,token2index):         
-        return [token2index[token] if token in self.token2index else token2index['<UNK>']  for token in text.split()[:self.max_len]]
+        return [self.token2index[token] if token in self.token2index else self.token2index['<UNK>']  for token in text.split()[:self.max_len]]
     def __getitem__(self,index):
         row=self.pd_table.iloc[index]
         text,label=row['text'],row['label']
