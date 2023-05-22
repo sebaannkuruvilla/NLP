@@ -15,8 +15,8 @@ class Vocabulary(object):
     def __init__(self,text_list):
         self.text_list=text_list
         self.vocab_object=Counter()
-        self.token2index={'<PAD>':0,'<UNK>':1}
-        self.index2token={0:'<PAD>',1:'<UNK>'}
+        self.token2index={'<PAD>':0,'<UNK>':1,'<START>':2,'<END>':3}
+        self.index2token={0:'<PAD>',1:'<UNK>',2:'<START>',3:'<END>'}
 
     def create_vocab(self):
         for txt in self.text_list:
