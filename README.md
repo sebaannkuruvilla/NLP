@@ -1,7 +1,7 @@
 # NLP
-In this repository i will be focussing on projects focussing on various NLP tasks
+In this repository I will be focussing on projects implementing various NLP tasks
 
-Projects Added so far:  \
+Projects Added so far:  
 * movie-reviews-nb-cnn-bilstm-pytorch.ipynb :  A Movie Review classification  task is implemented using various text classification techniques below 
   - Gaussian Naive Bayes Classifier
   - 1D convolutions for Text
